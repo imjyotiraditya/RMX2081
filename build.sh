@@ -6,6 +6,7 @@ git clone --depth=1 https://github.com/kdrag0n/proton-clang clang
 git clone --depth=1 https://github.com/imjyotiraditya/AnyKernel3 AnyKernel
 echo "Done"
 IMAGE=$(pwd)/out/arch/arm64/boot/Image.gz-dtb
+DTBO=$(pwd)/out/arch/arm64/boot/dtbo.img
 TANGGAL=$(date +"%F-%S")
 START=$(date +"%s")
 CLANG_VERSION=$(clang/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
@@ -51,7 +52,7 @@ function finerr() {
 # Compile plox
 function compile() {
    make O=out ARCH=arm64 vendor/sm8150-perf_defconfig
-   make -j$(nproc --all) Image.gz-dtb O=out \
+   make -j$(nproc --all) Image.gz-dtb dtbo.img O=out \
                          ARCH=arm64 \
                          TARGET_PRODUCT=msmnile \
                          PROJECT_NAME=19696 \
@@ -68,6 +69,7 @@ function compile() {
 if [ `ls "$IMAGE" 2>/dev/null | wc -l` != "0" ]
 then
    cp out/arch/arm64/boot/Image.gz-dtb AnyKernel
+   cp out/arch/arm64/boot/dtbo.img AnyKernel
 else
    finerr
 fi
